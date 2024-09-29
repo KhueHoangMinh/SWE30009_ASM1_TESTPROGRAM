@@ -45,16 +45,19 @@ function check_testcase(a,b) {
 
 function find_concrete(start_a, end_a, start_b, end_b) {
     const concrete = [];
+    const unsatisfies = []
 
     for(let i = start_a; i <= end_a; i++) {
         for(let j = start_b; j <= end_b; j++) {
             if(check_testcase(i,j).unsatisfies.length === 0) {
                 concrete.push([i,j]);
+            } else {
+                unsatisfies.push([i,j])
             }
         }
     }
 
-    return concrete;
+    return {concrete,unsatisfies};
 }
 
 if(args[2] === "check_testcase") {
@@ -71,8 +74,12 @@ if(args[2] === "check_testcase") {
 } else if(args[2] === "find_concrete") {
     try {
         const concrete = find_concrete(parseInt(args[3]), parseInt(args[4]), parseInt(args[5]), parseInt(args[6]));
-        console.log(`Concrete testcases found in range ${args[3]} <= A <= ${args[4]} and ${args[5]} <= B <= ${args[6]} (total ${concrete.length}):\n`);
-        concrete.forEach((c, i) => {
+        console.log(`Concrete testcases found in range ${args[3]} <= A <= ${args[4]} and ${args[5]} <= B <= ${args[6]} (total ${concrete.concrete.length}):\n`);
+        concrete.concrete.forEach((c, i) => {
+            console.log(`${i+1}. A = ${c[0]} and B = ${c[1]}\n`);
+        });
+        console.log(`Concrete testcases not satisfy found in range ${args[3]} <= A <= ${args[4]} and ${args[5]} <= B <= ${args[6]} (total ${concrete.unsatisfies.length}):\n`);
+        concrete.unsatisfies.forEach((c, i) => {
             console.log(`${i+1}. A = ${c[0]} and B = ${c[1]}\n`);
         });
     } catch (e) {
